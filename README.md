@@ -145,7 +145,7 @@ kids-math-practice-share/
 |  | `wrong_question` | 错题快照、错误答案、已掌握时间 |
 | 通知 | `notification` | 站内通知与已读时间 |
 | PK（预留） | `pk_challenge` / `pk_challenge_question` / `pk_challenge_answer` | 异步 PK 主表、共用题目、双方答案 |
-| 自检 | `phase0_smoke_test` | 启动时写入/读取/删除一次，验证数据库可用；可安全删除 |
+| 自检 | `phase0_smoke_test` | 启动时写入/读取/删除一次，验证数据库可用；不影响业务，删除前建议先关闭 `app.phase0.db-smoke-test-enabled` |
 
 ---
 
