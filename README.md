@@ -119,7 +119,7 @@
 ```text
 kids-math-practice-share/
 ├─ kids-math-practice.jar      可执行程序（Spring Boot 可执行 JAR）
-├─ application.properties      外置数据库/端口配置
+├─ application.properties.example 数据库/端口配置模板（复制为 application.properties）
 ├─ run.bat                     Windows 一键启动
 ├─ database/
 │  └─ init.sql                 建库、建表、演示账号
@@ -128,6 +128,8 @@ kids-math-practice-share/
 ├─ README.md                   本说明书
 └─ LICENSE                     MIT 许可证
 ```
+
+> 仓库不包含 `application.properties`：它含真实数据库密码，已被 `.gitignore` 排除。首次运行请复制模板并填写密码。
 
 ### 3.3 数据库表（13 张）
 
@@ -193,9 +195,15 @@ mysql -h 127.0.0.1 -P 3306 -u root -p --default-character-set=utf8mb4 < database
 
 `init.sql` 包含：建库、`USE kids_math`、13 张表、外键/唯一索引/字符集，以及两个演示账号和一条家长-学生绑定关系（重复执行不会重复插入演示账号）。
 
-### 4.3 修改数据库配置
+### 4.3 创建并修改数据库配置
 
-随包已经提供 JAR 同级目录的 `application.properties`，用记事本打开，只需要改这三行：
+仓库提供 JAR 同级目录的 `application.properties.example` 模板，**不含真实密码**。先复制一份：
+
+```bat
+copy application.properties.example application.properties
+```
+
+然后用记事本打开 `application.properties`，只需要改这三行：
 
 ```properties
 spring.datasource.url=jdbc:mysql://127.0.0.1:3306/kids_math?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
@@ -205,12 +213,15 @@ spring.datasource.password=你的MySQL密码
 
 - 数据库不在本机：把 `127.0.0.1` 改成数据库服务器 IP。
 - 端口不是 3306：把 `3306` 改成实际端口。
+- 模板里的 `CHANGE_ME` 必须替换成实际密码；密码为空时把等号右边留空。
 
-> **注意**：随包 `application.properties` 里的 `password` 是打包这台机器上的值，不是通用密码。接收方必须改成自己 MySQL 的 root 密码，否则启动会报 `Access denied for user 'root'@'localhost'`。
+> **注意**：`application.properties` 含真实凭据，已被 `.gitignore` 排除，不会出现在 GitHub 仓库。不要把填好的配置文件提交或上传；启动报 `Access denied for user 'root'@'localhost'` 时优先检查这里的用户名/密码。
 
 ### 4.4 启动
 
 #### 方式 A：双击 `run.bat`（Windows）
+
+> 运行前确认 JAR 同级目录已有 `application.properties`；如果是从仓库克隆，先按 4.3 复制模板。
 
 脚本会切换到自身目录并执行：
 
@@ -693,7 +704,8 @@ mysqldump -u root -p --databases kids_math --no-data --routines --triggers --def
 ## 10. 安全提醒
 
 - 这是本地/局域网演示项目，**不建议直接暴露到公网**。
-- `application.properties` 中的数据库 root 密码是明文；分享前务必改成占位值，接收方再填自己的密码。
+- 仓库只提供 `application.properties.example` 占位模板；真实 `application.properties` 已被 `.gitignore` 排除，不会上传。
+- 本地填写 `application.properties` 后，数据库 root 密码是明文；不要把该文件提交、上传或发给他人。
 - 演示账号密码是公开的，正式使用前请修改或删除。
 - 学生手机号、昵称和练习记录属于个人信息，只建议在可信环境使用。
 - 正确答案会下发到答题页用于即时反馈，服务端仍会重新判分；不要把本项目当作防作弊考试系统。
